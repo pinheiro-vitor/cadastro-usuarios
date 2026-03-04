@@ -1,80 +1,100 @@
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
-
-//configurações do CORS e para permitir JSON
 
 app.use(cors());
 app.use(express.json());
 
-//banco de dados em forma de array
-const usuarios = [];
 
-//rota post para criar um novo usuário
+const ARQUIVO_DADOS = 'banco.json';
+
+function lerUsuarios() {
+    try {
+        
+        const dados = fs.readFileSync(ARQUIVO_DADOS, 'utf8');
+        return JSON.parse(dados); 
+    } catch (erro) {
+        return [];
+    }
+}
+
+function salvarUsuarios(dados) {
+    fs.writeFileSync(ARQUIVO_DADOS, JSON.stringify(dados, null, 2));
+}
+
+
 app.post('/usuarios', (req, res) => {
-    // Pegue o nome e email do body da requisição
     const { nome, email } = req.body;
 
-    // para criar o usuário de ID único
+    const usuarios = lerUsuarios();
+
+    const emailJaExiste = usuarios.find(usuario => usuario.email === email);
+
+    if (emailJaExiste) {
+        return res.status(400).json({ erro: 'já cadastrado!' });
+    }
+
+
     const novoUsuario = {
         id: usuarios.length + 1,
         nome,
         email
     };
-    usuarios.push(novoUsuario);
 
-    //retorno
+    usuarios.push(novoUsuario);
+    salvarUsuarios(usuarios);
+
     res.status(201).json(novoUsuario);
 });
 
-//rota get para listar os usuários
+
+
 app.get('/usuarios', (req, res) => {
-    // Retorne todos os usuários do array
+    const usuarios = lerUsuarios();
     res.status(200).json(usuarios);
 });
 
-//rota para alterar um usuario
 
 app.put('/usuarios/:id', (req, res) => {
     const id = parseInt(req.params.id);
-    const {nome,email} = req.body;
+    const { nome, email } = req.body;
+
+    const usuarios = lerUsuarios();
 
     const index = usuarios.findIndex( usuario => usuario.id === id);
 
     if (index === -1) {
         return res.status(404).json({ error: 'Usuário não encontrado' });
     }
-
-    usuarios[index] = { ...usuarios[index], nome, email };
-    res.status(200).json(usuarios[index]);
-
 
     usuarios[index].nome = nome || usuarios[index].nome; 
     usuarios[index].email = email || usuarios[index].email;
 
-    
-    res.status(200).json({ mensagem: 'Usuário atualizado!'});
+    salvarUsuarios(usuarios);
+    res.status(200).json({ mensagem: 'Usuário atualizado!', usuario: usuarios[index] });
 });
 
-//rota para deletar um usuario
-//app.delete('/usuarios')
 
 app.delete('/usuarios/:id', (req, res)=> {
     const id = parseInt(req.params.id);
+    let usuarios = lerUsuarios();
     const index = usuarios.findIndex( usuario => usuario.id === id);
-
+    
     if (index === -1) {
         return res.status(404).json({ error: 'Usuário não encontrado' });
     }
+
     usuarios.splice(index, 1);
+    salvarUsuarios(usuarios);
     res.status(200).json({ mensagem: 'Usuário deletado!' });
 });
 
 
 
 
-// porta do servidor
+
 const PORTA = 3000;
 app.listen(PORTA,()=>{
     console.log('Servidor rodando na porta ' + PORTA);
