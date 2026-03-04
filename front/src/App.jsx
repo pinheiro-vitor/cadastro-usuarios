@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; 
 import { Trash2 } from 'lucide-react';
+import axios from 'axios'; 
 import './index.css';
 
 function App() {
@@ -7,18 +8,55 @@ function App() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
 
-  const handleSubmit = (e) => {
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/usuarios');
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Erro ao buscar usuários:", error);
+    }
+  };
+
+ 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) return;
     
-    setUsers([...users, { id: Date.now(), name, email }]);
-    setName('');
-    setEmail('');
+    try {
+      // Envia pro Node.js
+      await axios.post('http://localhost:3000/usuarios', {
+        nome: name,
+        email: email
+      });
+      
+      setName('');
+      setEmail('');
+      
+      // Atualiza a tabela buscando os dados novos no servidor
+      fetchUsers(); 
+    } catch (error) {
+      console.error("Erro ao cadastrar:", error);
+      alert("Erro ao cadastrar usuário!");
+    }
   };
 
-  const handleRemove = (id) => {
-    setUsers(users.filter(user => user.id !== id));
+ 
+  const handleRemove = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3000/usuarios/${id}`);
+      
+      fetchUsers();
+    } catch (error) {
+      console.error("Erro ao remover:", error);
+      alert("Erro ao remover usuário!");
+    }
   };
+
 
   return (
     <div className="container">
@@ -68,7 +106,8 @@ function App() {
               <tbody>
                 {users.map(user => (
                   <tr key={user.id}>
-                    <td>{user.name}</td>
+                    {}
+                    <td>{user.nome}</td> 
                     <td>{user.email}</td>
                     <td className="actions-cell">
                       <button 
