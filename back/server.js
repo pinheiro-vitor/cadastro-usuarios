@@ -36,8 +36,42 @@ app.get('/usuarios', (req, res) => {
 
 //rota para alterar um usuario
 
+app.put('/usuarios/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const {nome,email} = req.body;
+
+    const index = usuarios.findIndex( usuario => usuario.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    usuarios[index] = { ...usuarios[index], nome, email };
+    res.status(200).json(usuarios[index]);
+
+
+    usuarios[index].nome = nome || usuarios[index].nome; 
+    usuarios[index].email = email || usuarios[index].email;
+
+    
+    res.status(200).json({ mensagem: 'Usuário atualizado!'});
+});
+
 //rota para deletar um usuario
 //app.delete('/usuarios')
+
+app.delete('/usuarios/:id', (req, res)=> {
+    const id = parseInt(req.params.id);
+    const index = usuarios.findIndex( usuario => usuario.id === id);
+
+    if (index === -1) {
+        return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+    usuarios.splice(index, 1);
+    res.status(200).json({ mensagem: 'Usuário deletado!' });
+});
+
+
 
 
 // porta do servidor
