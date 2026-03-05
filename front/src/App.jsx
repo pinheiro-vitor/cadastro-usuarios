@@ -15,15 +15,13 @@ function App() {
       const response = await axios.get('http://localhost:3000/usuarios');
       setUsers(response.data);
     } catch (error) {
-      console.error("Erro ao buscar usuários:", error);
+      console.error('Erro ao buscar usuários:', error);
     }
   };
-
 
   useEffect(() => {
     fetchUsers();
   }, []);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,15 +30,16 @@ function App() {
     try {
       await axios.post('http://localhost:3000/usuarios', {
         nome: name,
-        email: email
+        email: email,
       });
 
       setName('');
       setEmail('');
       fetchUsers();
     } catch (error) {
-      console.error("Erro ao cadastrar:", error);
-      alert("Erro ao cadastrar usuário!");
+      console.error('Erro ao cadastrar:', error);
+      const mensagem = error.response?.data?.erro || 'Erro ao cadastrar usuário!';
+      alert(mensagem);
     }
   };
 
@@ -62,13 +61,14 @@ function App() {
     try {
       await axios.put(`http://localhost:3000/usuarios/${id}`, {
         nome: editName,
-        email: editEmail
+        email: editEmail,
       });
       setEditingRowId(null);
       fetchUsers();
     } catch (error) {
-      console.error("Erro ao salvar edição:", error);
-      alert("Erro ao salvar edição!");
+      console.error('Erro ao salvar edição:', error);
+      const mensagem = error.response?.data?.erro || 'Erro ao salvar edição!';
+      alert(mensagem);
     }
   };
 
@@ -78,11 +78,11 @@ function App() {
 
       fetchUsers();
     } catch (error) {
-      console.error("Erro ao remover:", error);
-      alert("Erro ao remover usuário!");
+      console.error('Erro ao remover:', error);
+      const mensagem = error.response?.data?.erro || 'Erro ao remover usuário!';
+      alert(mensagem);
     }
   };
-
 
   return (
     <div className="container">
@@ -130,7 +130,7 @@ function App() {
                 </tr>
               </thead>
               <tbody>
-                {users.map(user => (
+                {users.map((user) => (
                   <tr key={user.id}>
                     {editingRowId === user.id ? (
                       <>

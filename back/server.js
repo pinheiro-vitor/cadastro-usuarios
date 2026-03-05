@@ -33,7 +33,7 @@ app.post('/usuarios', (req, res) => {
     const emailJaExiste = usuarios.find(usuario => usuario.email === email);
 
     if (emailJaExiste) {
-        return res.status(400).json({ erro: 'Email já cadastrado!' });
+        return res.status(400).json({ erro: 'Erro ao cadastrar usuário: Email já cadastrado!' });
     }
 
 
@@ -72,7 +72,7 @@ app.put('/usuarios/:id', (req, res) => {
     const emailJaExiste = usuarios.find(usuario => usuario.email === email && usuario.id !== id);
 
     if (emailJaExiste) {
-        return res.status(400).json({ erro: 'Email já cadastrado!' });
+        return res.status(400).json({ erro: 'Erro ao editar usuário: Email já cadastrado!' });
     }
 
     usuarios[index].nome = nome || usuarios[index].nome; 
