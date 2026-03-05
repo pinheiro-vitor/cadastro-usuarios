@@ -92,15 +92,24 @@ body {
   border-bottom: 1px solid #eee;
 }
 
+.actions-header {
+  text-align: center !important;
+}
+
 .actions-cell {
-  width: 50px;
+  width: 100px;
   text-align: center;
 }
 
-.btn-remove {
+.actions-cell button {
+  display: inline-flex;
+  margin: 0 0.25rem;
+}
+
+.btn-remove,
+.btn-edit {
   background: transparent;
   border: none;
-  color: #dc3545;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -108,8 +117,36 @@ body {
   padding: 0.25rem;
 }
 
+.btn-remove {
+  color: #dc3545;
+}
+
+.btn-edit {
+  color: #333;
+}
+
 .empty-state {
   text-align: center;
   padding: 2rem;
   color: #666;
+}
+
+.inline-edit-input {
+  width: 100%;
+  padding: 0.4rem;
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.inline-save {
+  color: #28a745 !important;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.inline-cancel {
+  color: #6c757d !important;
+  font-weight: bold;
+  font-size: 0.8rem;
 }

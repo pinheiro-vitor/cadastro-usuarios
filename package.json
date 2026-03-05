@@ -1,0 +1,15 @@
+{
+    "name": "cadastro-usuarios-root",
+    "version": "1.0.0",
+    "description": "Root package to manage frontend and backend",
+    "private": true,
+    "scripts": {
+        "start": "npm-run-all --parallel dev:*",
+        "dev:back": "cd back && npm run dev",
+        "dev:front": "cd front && npm run dev",
+        "install:all": "npm install && cd back && npm install && cd front && npm install"
+    },
+    "devDependencies": {
+        "npm-run-all": "^4.1.5"
+    }
+}
