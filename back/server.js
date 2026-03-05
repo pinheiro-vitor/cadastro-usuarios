@@ -33,7 +33,7 @@ app.post('/usuarios', (req, res) => {
     const emailJaExiste = usuarios.find(usuario => usuario.email === email);
 
     if (emailJaExiste) {
-        return res.status(400).json({ erro: 'já cadastrado!' });
+        return res.status(400).json({ erro: 'Email já cadastrado!' });
     }
 
 
@@ -69,6 +69,12 @@ app.put('/usuarios/:id', (req, res) => {
         return res.status(404).json({ error: 'Usuário não encontrado' });
     }
 
+    const emailJaExiste = usuarios.find(usuario => usuario.email === email && usuario.id !== id);
+
+    if (emailJaExiste) {
+        return res.status(400).json({ erro: 'Email já cadastrado!' });
+    }
+
     usuarios[index].nome = nome || usuarios[index].nome; 
     usuarios[index].email = email || usuarios[index].email;
 
@@ -90,7 +96,6 @@ app.delete('/usuarios/:id', (req, res)=> {
     salvarUsuarios(usuarios);
     res.status(200).json({ mensagem: 'Usuário deletado!' });
 });
-
 
 
 
